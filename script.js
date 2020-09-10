@@ -47,7 +47,7 @@ function getQuote() {
 
 
 
-//Ajout de fonctionnalite
+//Ajout de fonctionnalite de twitter
 function tweetQuote() {
     const quote = quoteText.innerText;
     const author = authorText.innerText;
