@@ -4,35 +4,53 @@ const authorText = document.getElementById('author');
 const twitterBtn = document.getElementById('twitter');
 const newQuote = document.getElementById('new-button');
 
+let posts = [];
 // add Quote data from API
-async function getQuote() {
-    const apiProxy = 'https://cors-anywhere.herokuapp.com/';
-    const apiUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en';
+// const apiProxy = 'https://cors-anywhere.herokuapp.com/';
+const apiUrl = 'https://jsonplaceholder.typicode.com';
+
+//feel the array posts with api data
+fetch(`${apiUrl}/posts`)
+    .then((result) => result.json())
+    .then((data) => {
+        data.forEach(element =>
+            posts.push(element));
+
+    });
+
+
+// fonction qui permet de selectionner des quote de facon aleatoire
+// et charge la page.
+function getQuote() {
     try {
-        const response = await fetch(apiProxy + apiUrl);
-        const data = await response.json();
-        if (data.quoteAuthor === '') {
+        const i = Math.floor(Math.random() * posts.length);
+
+        if (posts[i].title === '') {
             quoteAuthor.innerText = 'unknown'
         } else {
-            quoteAuthor.innerText = data.quoteAuthor;
+            authorText.innerText = posts[i].title;
         }
-        if (data.quoteText.length > 120) {
+
+        if (posts[i].body.length > 100) {
             quoteText.classList.add('long-quote');
         } else {
             quoteText.classList.remove('long-quote');
         }
-        quoteText.innerText = data.quoteText;
+        quoteText.innerText = posts[i].body;
 
+        console.log(posts[i].body);
 
+    } catch (e) {
 
-    } catch (error) {
-        getQuote();
     }
 }
+
+
+
 //Ajout de fonctionnalite
 function tweetQuote() {
     const quote = quoteText.innerText;
-    const author = quoteAuthor.innerText;
+    const author = authorText.innerText;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
     window.open(twitterUrl, '_blank');
 }
@@ -41,22 +59,3 @@ newQuote.addEventListener('click', getQuote);
 twitterBtn.addEventListener('click', tweetQuote);
 //on load
 getQuote();
-// async function getQuote() {
-
-//     await fetch("https://qvoca-bestquotes-v1.p.rapidapi.com/quote", {
-//             "method": "GET",
-//             "headers": {
-//                 "x-rapidapi-host": "qvoca-bestquotes-v1.p.rapidapi.com",
-//                 "x-rapidapi-key": "VIEW-ONLY"
-//             }
-//         })
-//         .then(response => {
-//             console.log(response);
-//             const data = response.json();
-//             quoteAuthor.innerText = data.author;
-//             quoteText.innerText = data.message;
-//         })
-//         .catch(err => {
-//             console.log(err);
-//         });
-// }
